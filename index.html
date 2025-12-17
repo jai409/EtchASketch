@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flexbox Etch-a-Sketch</title>
+  <style>
+    :root {
+      --size: 960px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 24px;
+      background: #f5f5f5;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #container {
+      width: var(--size);
+      height: var(--size);
+      display: flex;
+      flex-wrap: wrap;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .square {
+      box-sizing: border-box;
+      background: rgb(240, 240, 240);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <button id="resetBtn">Reset Grid</button>
+  <div id="container"></div>
+
+  <script>
+    const container = document.getElementById('container');
+    const resetBtn = document.getElementById('resetBtn');
+    const TOTAL_SIZE = 960;
+
+    function createGrid(squaresPerSide = 16) {
+      container.innerHTML = '';
+      const squareSize = TOTAL_SIZE / squaresPerSide;
+
+      for (let i = 0; i < squaresPerSide * squaresPerSide; i++) {
+        const square = document.createElement('div');
+        square.classList.add('square');
+        square.style.width = `${squareSize}px`;
+        square.style.height = `${squareSize}px`;
+
+        square.addEventListener('mouseenter', () => {
+          if (!square.dataset.color) {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            square.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+            square.dataset.color = 'true';
+          }
+
+          let currentOpacity = Number(square.style.opacity);
+          if (currentOpacity < 1) {
+            square.style.opacity = (currentOpacity + 0.1).toFixed(1);
+          }
+        });
+
+        container.appendChild(square);
+      }
+    }
+
+    resetBtn.addEventListener('click', () => {
+      let input = prompt('Enter number of squares per side (max 100):');
+      let size = Number(input);
+
+      if (!size || size < 1 || size > 100) {
+        alert('Invalid input. Please enter a number between 1 and 100.');
+        return;
+      }
+
+      createGrid(size);
+    });
+
+    createGrid();
+  </script>
+</body>
+</html>
